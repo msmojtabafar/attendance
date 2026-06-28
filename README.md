@@ -95,30 +95,6 @@ docker run --rm attendance-manager
 
 ------------------------------------------------------------------------
 
-## 📸 Screenshots
-
-Add screenshots here after uploading them to the repository.
-
-Example:
-
-    assets/
-    ├── main-window.png
-    ├── pdf-report.png
-    └── excel-report.png
-
-------------------------------------------------------------------------
-
-## 📈 Future Improvements
-
--   Search & filter
--   Monthly reports
--   Statistics dashboard
--   Dark mode
--   Backup & restore
--   Executable build (Windows/Linux)
-
-------------------------------------------------------------------------
-
 ## 🤝 Contributing
 
 Contributions, issues and feature requests are welcome.
