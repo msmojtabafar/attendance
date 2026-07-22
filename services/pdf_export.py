@@ -3,7 +3,8 @@ from reportlab.platypus import (
     Table
 )
 
-
+from reportlab.lib import colors
+from reportlab.platypus import TableStyle
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.lib.styles import getSampleStyleSheet
@@ -43,6 +44,7 @@ def export_pdf(rows):
 
     data = [[
         fa("تاریخ"),
+        fa("نوع روز"),
         fa("ورود"),
         fa("خروج"),
         fa("ساعت حضور"),
@@ -52,12 +54,13 @@ def export_pdf(rows):
 
     for r in rows:
         data.append([
-            fa(str(r["work_date"])),
-            str(r["check_in"]),
-            str(r["check_out"]),
-            minutes_to_time(r["work_minutes"]),
-            minutes_to_time(r["overtime_minutes"]),
-            minutes_to_time(r["shortage_minutes"])
+            fa(r["work_date"]),
+            fa(r["day_type"]),
+            fa(r["check_in"]),
+            fa(r["check_out"]),
+            fa(minutes_to_time(r["work_minutes"])),
+            fa(minutes_to_time(r["overtime_minutes"])),
+            fa(minutes_to_time(r["shortage_minutes"]))
         ])
 
     doc = SimpleDocTemplate(
@@ -66,6 +69,32 @@ def export_pdf(rows):
 
     table = Table(data)
 
+    style = TableStyle([
+        ("GRID", (0, 0), (-1, -1), 0.5, colors.black),
+        ("BACKGROUND", (0, 0), (-1, 0), colors.lightgrey),
+        ("ALIGN", (0, 0), (-1, -1), "CENTER"),
+        ("FONTNAME", (0, 0), (-1, -1), "Vazir"),
+    ])
+
+    for i, r in enumerate(rows, start=1):
+
+        if r["day_type"] in (
+            "مرخصی استحقاقی",
+            "مرخصی ساعتی",
+            "مرخصی استعلاجی",
+        ):
+            style.add("BACKGROUND", (0, i), (-1, i), colors.lightgreen)
+
+        elif r["day_type"] == "مأموریت":
+            style.add("BACKGROUND", (0, i), (-1, i), colors.lightblue)
+
+        elif r["day_type"] == "تعطیل رسمی":
+            style.add("BACKGROUND", (0, i), (-1, i), colors.lightgrey)
+
+        elif r["day_type"] == "غیبت":
+            style.add("BACKGROUND", (0, i), (-1, i), colors.pink)
+
+    table.setStyle(style)
 
     table.setStyle(TableStyle([
         ("FONTNAME", (0, 0), (-1, -1), "Vazir"),

@@ -9,9 +9,11 @@ from PySide6.QtWidgets import (
     QTableWidget,
     QTableWidgetItem,
     QLineEdit,
-    QMessageBox
+    QMessageBox,
+    QComboBox
 )
 
+from PySide6.QtGui import QColor
 from functools import partial
 from PySide6.QtCore import QTime, QDate
 
@@ -33,7 +35,24 @@ from datetime import date
 class MainWindow(QWidget):
 
     def __init__(self):
+        
         super().__init__()
+        
+        self.day_type = QComboBox()
+
+        self.day_type.addItems([
+            "حضور",
+            "مرخصی استحقاقی",
+            "مرخصی ساعتی",
+            "مرخصی استعلاجی",
+            "مأموریت",
+            "تعطیل رسمی",
+            "غیبت"
+        ])
+
+        self.day_type.currentTextChanged.connect(
+        self.day_type_changed
+        )
 
         self.editing_id = None
         self.setWindowTitle("Attendance")
@@ -63,6 +82,9 @@ class MainWindow(QWidget):
         row.addWidget(QLabel("Date"))
         row.addWidget(self.date)
 
+        row.addWidget(QLabel("نوع روز"))
+        row.addWidget(self.day_type)
+
         row.addWidget(QLabel("In"))
         row.addWidget(self.in_time)
 
@@ -85,9 +107,10 @@ class MainWindow(QWidget):
         layout.addLayout(row)
 
         self.table = QTableWidget()
-        self.table.setColumnCount(8)
+        self.table.setColumnCount(9)
         self.table.setHorizontalHeaderLabels([
             "تاریخ",
+            "نوع روز",
             "ورود",
             "خروج",
             "ساعت حضور",
@@ -119,25 +142,46 @@ class MainWindow(QWidget):
 
         self.update_summary()
 
+    def day_type_changed(self):
 
+        enable = self.day_type.currentText() == "حضور"
+
+        self.in_time.setEnabled(enable)
+        self.out_time.setEnabled(enable)
+
+        if not enable:
+            self.in_time.setTime(QTime(0, 0))
+            self.out_time.setTime(QTime(0, 0))
+            
+    
     def save(self):
 
         try:
 
             date = self.date.text().strip()
+            day_type = self.day_type.currentText()
+            
+            if day_type == "حضور":
 
-            check_in = self.in_time.time().toString("HH:mm")
-            check_out = self.out_time.time().toString("HH:mm")
+                check_in = self.in_time.time().toString("HH:mm")
+                check_out = self.out_time.time().toString("HH:mm")
+
+            else:
+
+                check_in = "-"
+                check_out = "-"
 
             result = calculate(
                 check_in,
-                check_out
+                check_out,
+                day_type
             )
 
             if self.editing_id is None:
 
                 insert_record(
                     date,
+                    day_type,
                     check_in,
                     check_out,
                     result["work"],
@@ -156,6 +200,7 @@ class MainWindow(QWidget):
                 update_record(
                     self.editing_id,
                     date,
+                    day_type,
                     check_in,
                     check_out,
                     result["work"],
@@ -199,18 +244,24 @@ class MainWindow(QWidget):
             self.table.setItem(
                 r,
                 1,
-                QTableWidgetItem(row["check_in"])
+                QTableWidgetItem(row["day_type"])
             )
-
+            
             self.table.setItem(
                 r,
                 2,
+                QTableWidgetItem(row["check_in"])
+            )
+            
+            self.table.setItem(
+                r,
+                3,
                 QTableWidgetItem(row["check_out"])
             )
 
             self.table.setItem(
                 r,
-                3,
+                4,
                 QTableWidgetItem(
                     self.minutes_to_time(row["work_minutes"])
                 )
@@ -218,7 +269,7 @@ class MainWindow(QWidget):
 
             self.table.setItem(
                 r,
-                4,
+                5,
                 QTableWidgetItem(
                     self.minutes_to_time(row["overtime_minutes"])
                 )
@@ -226,7 +277,7 @@ class MainWindow(QWidget):
 
             self.table.setItem(
                 r,
-                5,
+                6,
                 QTableWidgetItem(
                     self.minutes_to_time(row["shortage_minutes"])
                 )
@@ -251,16 +302,34 @@ class MainWindow(QWidget):
 
             self.table.setCellWidget(
                 r,
-                6,
+                7,
                 edit_btn
             )
 
             self.table.setCellWidget(
                 r,
-                7,
+                8,
                 delete_btn
             )
+            
+            colors = {
+                "مرخصی استحقاقی": QColor(220,255,220),
+                "مرخصی ساعتی": QColor(220,255,220),
+                "مرخصی استعلاجی": QColor(220,255,220),
+                "مأموریت": QColor(220,240,255),
+                "تعطیل رسمی": QColor(240,240,240),
+                "غیبت": QColor(255,220,220)
+            }
 
+            if row["day_type"] in colors:
+
+                for c in range(7):
+
+                    item = self.table.item(r,c)
+
+                    if item:
+                        item.setBackground(colors[row["day_type"]])
+                    
         self.update_summary()
 
 
@@ -351,6 +420,10 @@ class MainWindow(QWidget):
             record["work_date"]
         )
 
+        self.day_type.setCurrentText(
+            record["day_type"]
+        )
+        
         self.in_time.setTime(
             QTime.fromString(
                 record["check_in"],

@@ -17,6 +17,7 @@ def init_db():
     CREATE TABLE IF NOT EXISTS attendance(
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     work_date TEXT,
+    day_type TEXT,
     check_in TEXT,
     check_out TEXT,
     work_minutes INTEGER,
@@ -31,6 +32,7 @@ def init_db():
 
 def insert_record(
         work_date,
+        day_type,
         check_in,
         check_out,
         work_minutes,
@@ -43,15 +45,17 @@ def insert_record(
     cur.execute("""
     INSERT INTO attendance(
         work_date,
+        day_type,
         check_in,
         check_out,
         work_minutes,
         overtime_minutes,
         shortage_minutes
     )
-    VALUES(?,?,?,?,?,?)
+    VALUES(?,?,?,?,?,?,?)
     """, (
         work_date,
+        day_type,
         check_in,
         check_out,
         work_minutes,
@@ -61,7 +65,6 @@ def insert_record(
 
     conn.commit()
     conn.close()
-
 
 def get_all():
     conn = get_connection()
@@ -95,6 +98,7 @@ def delete_record(record_id):
 def update_record(
         record_id,
         work_date,
+        day_type,
         check_in,
         check_out,
         work_minutes,
@@ -108,6 +112,7 @@ def update_record(
         UPDATE attendance
         SET
             work_date=?,
+            day_type=?,
             check_in=?,
             check_out=?,
             work_minutes=?,
@@ -116,6 +121,7 @@ def update_record(
         WHERE id=?
     """, (
         work_date,
+        day_type,
         check_in,
         check_out,
         work_minutes,

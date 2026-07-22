@@ -8,8 +8,15 @@ def to_minutes(t):
     return dt.hour * 60 + dt.minute
 
 
-def calculate(check_in, check_out):
+def calculate(check_in, check_out, day_type="حضور"):
 
+    if day_type != "حضور":
+        return {
+            "work": 0,
+            "overtime": 0,
+            "shortage": 0
+        }
+        
     start = to_minutes(check_in)
     end = to_minutes(check_out)
 
