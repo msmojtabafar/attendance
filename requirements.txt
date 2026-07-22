@@ -3,3 +3,4 @@ openpyxl
 reportlab
 arabic-reshaper 
 python-bidi
+persiantools

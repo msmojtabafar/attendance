@@ -15,14 +15,13 @@ def init_db():
 
     cur.execute("""
     CREATE TABLE IF NOT EXISTS attendance(
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        work_date TEXT,
-        check_in TEXT,
-        check_out TEXT,
-        is_holiday INTEGER,
-        work_minutes INTEGER,
-        overtime_minutes INTEGER,
-        shortage_minutes INTEGER
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    work_date TEXT,
+    check_in TEXT,
+    check_out TEXT,
+    work_minutes INTEGER,
+    overtime_minutes INTEGER,
+    shortage_minutes INTEGER
     )
     """)
 
@@ -34,7 +33,6 @@ def insert_record(
         work_date,
         check_in,
         check_out,
-        is_holiday,
         work_minutes,
         overtime,
         shortage
@@ -47,17 +45,15 @@ def insert_record(
         work_date,
         check_in,
         check_out,
-        is_holiday,
         work_minutes,
         overtime_minutes,
         shortage_minutes
     )
-    VALUES(?,?,?,?,?,?,?)
+    VALUES(?,?,?,?,?,?)
     """, (
         work_date,
         check_in,
         check_out,
-        is_holiday,
         work_minutes,
         overtime,
         shortage
@@ -101,7 +97,6 @@ def update_record(
         work_date,
         check_in,
         check_out,
-        is_holiday,
         work_minutes,
         overtime,
         shortage
@@ -115,7 +110,6 @@ def update_record(
             work_date=?,
             check_in=?,
             check_out=?,
-            is_holiday=?,
             work_minutes=?,
             overtime_minutes=?,
             shortage_minutes=?
@@ -124,7 +118,6 @@ def update_record(
         work_date,
         check_in,
         check_out,
-        is_holiday,
         work_minutes,
         overtime,
         shortage,

@@ -5,7 +5,6 @@
 ![Python](https://img.shields.io/badge/Python-3.11%2B-blue)
 ![PySide6](https://img.shields.io/badge/PySide6-GUI-green)
 ![SQLite](https://img.shields.io/badge/Database-SQLite-lightgrey)
-![Docker](https://img.shields.io/badge/Docker-Supported-2496ED?logo=docker\&logoColor=white)
 ![Linux](https://img.shields.io/badge/Linux-Supported-FCC624?logo=linux\&logoColor=black)
 ![License](https://img.shields.io/badge/License-MIT-yellow)
 
@@ -39,8 +38,6 @@ attendance_app/
 ├── ui/
 ├── main.py
 ├── requirements.txt
-├── Dockerfile
-├── docker-compose.yml
 ├── .gitignore
 └── README.md
 ```
@@ -69,60 +66,6 @@ python main.py
 
 ---
 
-# 🐳 Docker
-
-### Pull the latest image
-
-```bash
-docker pull ghcr.io/msmojtabafar/attendance:latest
-```
-
-### Run with Docker Compose (Recommended)
-
-Allow Docker to access your X11 display:
-
-```bash
-xhost +local:docker
-```
-
-Start the application:
-
-```bash
-docker compose up
-```
-
-Stop the application:
-
-```bash
-docker compose down
-```
-
----
-
-### Build the Docker image locally
-
-```bash
-docker build -t attendance-manager .
-```
-
-Run the locally built image:
-
-```bash
-docker run --rm attendance-manager
-```
-
----
-
-## 📦 Releases
-
-Prebuilt binaries are available in the **Releases** section.
-
-* Linux Executable
-* Source Code (.zip)
-* Source Code (.tar.gz)
-
----
-
 ## 🛠 Technologies
 
 * Python
@@ -133,8 +76,6 @@ Prebuilt binaries are available in the **Releases** section.
 * PersianTools
 * arabic-reshaper
 * python-bidi
-* Docker
-
 ---
 
 ## 🤝 Contributing
